@@ -1,0 +1,380 @@
+
+version: '2'
+
+volumes:
+  orderer.center.com:
+  peer0.org1.fortune.infinity:
+  peer1.org1.fortune.infinity:
+  peer2.org1.fortune.infinity:
+  peer3.org1.fortune.infinity:
+  peer0.org2.watch.dog:
+  peer1.org2.watch.dog:
+  peer2.org2.watch.dog:
+  peer3.org2.watch.dog:
+
+networks:
+  myNetwork:
+
+services:
+  orderer.center.com:
+    container_name: orderer.center.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=9999
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+        - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../organizations/ordererOrganizations/center.com/orderers/orderer.center.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/center.com/orderers/orderer.center.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.center.com:/var/hyperledger/production/orderer
+    ports:
+      - 9999:9999
+    networks:
+      - myNetwork
+
+  peer0.org1.fortune.infinity:
+    container_name: peer0.org1.fortune.infinity
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.org1.fortune.infinity
+      - CORE_PEER_ADDRESS=peer0.org1.fortune.infinity:5011
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5011
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.fortune.infinity:5012
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5012
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.fortune.infinity:5011
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.fortune.infinity:5011
+      - CORE_PEER_LOCALMSPID=Org1MSP      
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer0.org1.fortune.infinity/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer0.org1.fortune.infinity/tls:/etc/hyperledger/fabric/tls
+        - peer0.org1.fortune.infinity:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5011:5011
+    depends_on:
+      - couchdb0
+    networks:
+      - myNetwork
+
+  peer1.org1.fortune.infinity:
+    container_name: peer1.org1.fortune.infinity
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer1.org1.fortune.infinity
+      - CORE_PEER_ADDRESS=peer1.org1.fortune.infinity:5021
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5021
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org1.fortune.infinity:5022
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5022
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.fortune.infinity:5021
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.fortune.infinity:5021
+      - CORE_PEER_LOCALMSPID=Org1MSP      
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer1.org1.fortune.infinity/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer1.org1.fortune.infinity/tls:/etc/hyperledger/fabric/tls
+        - peer1.org1.fortune.infinity:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5021:5021
+    depends_on:
+      - couchdb1
+    networks:
+      - myNetwork
+
+  peer2.org1.fortune.infinity:
+    container_name: peer2.org1.fortune.infinity
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer2.org1.fortune.infinity
+      - CORE_PEER_ADDRESS=peer2.org1.fortune.infinity:5031
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5031
+      - CORE_PEER_CHAINCODEADDRESS=peer2.org1.fortune.infinity:5032
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5032
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.org1.fortune.infinity:5031
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.org1.fortune.infinity:5031
+      - CORE_PEER_LOCALMSPID=Org1MSP      
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer2.org1.fortune.infinity/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer2.org1.fortune.infinity/tls:/etc/hyperledger/fabric/tls
+        - peer2.org1.fortune.infinity:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5031:5031
+    depends_on:
+      - couchdb2
+    networks:
+      - myNetwork
+
+  peer3.org1.fortune.infinity:
+    container_name: peer3.org1.fortune.infinity
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer3.org1.fortune.infinity
+      - CORE_PEER_ADDRESS=peer3.org1.fortune.infinity:5041
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5041
+      - CORE_PEER_CHAINCODEADDRESS=peer3.org1.fortune.infinity:5042
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5042
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer3.org1.fortune.infinity:5041
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.org1.fortune.infinity:5041
+      - CORE_PEER_LOCALMSPID=Org1MSP      
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer3.org1.fortune.infinity/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org1.fortune.infinity/peers/peer3.org1.fortune.infinity/tls:/etc/hyperledger/fabric/tls
+        - peer3.org1.fortune.infinity:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5041:5041
+    depends_on:
+      - couchdb3
+    networks:
+      - myNetwork
+
+  peer0.org2.watch.dog:
+    container_name: peer0.org2.watch.dog
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.org2.watch.dog
+      - CORE_PEER_ADDRESS=peer0.org2.watch.dog:7011
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7011
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.watch.dog:7012
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7012
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.watch.dog:7011
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.watch.dog:7011
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb10:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer0.org2.watch.dog/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer0.org2.watch.dog/tls:/etc/hyperledger/fabric/tls
+        - peer0.org2.watch.dog:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7011:7011
+    depends_on:
+      - couchdb10
+    networks:
+      - myNetwork
+  
+  peer1.org2.watch.dog:
+    container_name: peer1.org2.watch.dog
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer1.org2.watch.dog
+      - CORE_PEER_ADDRESS=peer1.org2.watch.dog:7021
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7021
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org2.watch.dog:7022
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7022
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.watch.dog:7021
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.watch.dog:7021
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb11:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer1.org2.watch.dog/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer1.org2.watch.dog/tls:/etc/hyperledger/fabric/tls
+        - peer1.org2.watch.dog:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7021:7021
+    depends_on:
+      - couchdb11
+    networks:
+      - myNetwork
+
+  peer2.org2.watch.dog:
+    container_name: peer2.org2.watch.dog
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer2.org2.watch.dog
+      - CORE_PEER_ADDRESS=peer2.org2.watch.dog:7031
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7031
+      - CORE_PEER_CHAINCODEADDRESS=peer2.org2.watch.dog:7032
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7032
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.org2.watch.dog:7031
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.org2.watch.dog:7031
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb12:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer2.org2.watch.dog/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer2.org2.watch.dog/tls:/etc/hyperledger/fabric/tls
+        - peer2.org2.watch.dog:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7031:7031
+    depends_on:
+      - couchdb12
+    networks:
+      - myNetwork
+
+  peer3.org2.watch.dog:
+    container_name: peer3.org2.watch.dog
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_myNetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer3.org2.watch.dog
+      - CORE_PEER_ADDRESS=peer3.org2.watch.dog:7041
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7041
+      - CORE_PEER_CHAINCODEADDRESS=peer3.org2.watch.dog:7042
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7042
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.org2.watch.dog:7041
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer3.org2.watch.dog:7041
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb13:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer3.org2.watch.dog/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/org2.watch.dog/peers/peer3.org2.watch.dog/tls:/etc/hyperledger/fabric/tls
+        - peer3.org2.watch.dog:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7041:7041
+    depends_on:
+      - couchdb13
+    networks:
+      - myNetwork
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    depends_on:
+      - peer0.org1.fortune.infinity
+      - peer1.org1.fortune.infinity
+      - peer2.org1.fortune.infinity
+      - peer3.org1.fortune.infinity      
+      - peer0.org2.watch.dog
+      - peer1.org2.watch.dog
+      - peer2.org2.watch.dog
+      - peer3.org2.watch.dog
+    networks:
+      - myNetwork
+
