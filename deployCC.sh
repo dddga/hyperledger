@@ -14,7 +14,7 @@ function subinfoln() {
 }
 
 # add PATH to ensure we are picking up the correct binaries
-export PATH=${HOME}/myProject/bin:$PATH
+export PATH=${HOME}/hyperledger/bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/config
 
 # Chaincode config variable
@@ -164,12 +164,12 @@ peer lifecycle chaincode queryinstalled >&log.txt
 PACKAGE_ID=$(sed -n "/${CC_NAME}_${CC_VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
 
 set -x
-peer lifecycle chaincode approveformyorg -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence 1 >&log.txt
+peer lifecycle chaincode approveformyorg -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com  --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence 1 >&log.txt
 { set +x; } 2>/dev/null
 cat log.txt
 
 ## check commitreadiness
-peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --sequence 1 --tls --cafile $ORDERER_CA --output json
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME  --name ${CC_NAME} --version ${CC_VERSION} --sequence 1 --tls --cafile $ORDERER_CA --output json
 
 
 ## commit the chaincode definition
@@ -198,15 +198,15 @@ peer lifecycle chaincode queryinstalled >&log.txt
 PACKAGE_ID=$(sed -n "/${CC_NAME}_${CC_VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
 
 set -x
-peer lifecycle chaincode approveformyorg -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence 1 >&log.txt
+peer lifecycle chaincode approveformyorg -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com  --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence 1 >&log.txt
 { set +x; } 2>/dev/null
 cat log.txt
 
 ## check commitreadiness
-peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --sequence 1 --tls --cafile $ORDERER_CA --output json
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME  --name ${CC_NAME} --version ${CC_VERSION} --sequence 1 --tls --cafile $ORDERER_CA --output json
 
 set -x
-peer lifecycle chaincode commit -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence 1 >&log.txt
+peer lifecycle chaincode commit -o localhost:9999 --ordererTLSHostnameOverride orderer.center.com  --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence 1 >&log.txt
 { set +x; } 2>/dev/null
 cat log.txt
 

@@ -20,7 +20,7 @@ infoln "Tear down running network"
 ./networkdown.sh
 
 # add PATH to ensure we are picking up the correct binaries
-export PATH=${HOME}/myProject/bin:$PATH
+export PATH=${HOME}/hyperledger/bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/config
 
 # cleen up the MSP directory

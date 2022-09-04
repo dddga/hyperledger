@@ -17,7 +17,7 @@ function subinfoln() {
 infoln "Fetching channel config for channel $CHANNEL_NAME"
 
 # add PATH to ensure we are picking up the correct binaries
-export PATH=${HOME}/myProject/bin:$PATH
+export PATH=${HOME}/hyperledger/bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/config
 
 CHANNEL_NAME="infinity"
@@ -52,7 +52,6 @@ jq '.data.data[0].payload.data.config' config_block.json > config.json
 
 set -x
 infoln "Modify the configuration to append the anchor peer"
-Modify the configuration to append the anchor peer 
 jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.fortune.infinity","port": 5011}]},"version": "0"}}' config.json > modified_config.json
 { set +x; } 2>/dev/null
 
@@ -107,7 +106,6 @@ jq '.data.data[0].payload.data.config' config_block.json > config.json
 
 set -x
 infoln "Modify the configuration to append the anchor peer"
-Modify the configuration to append the anchor peer 
 jq '.channel_group.groups.Application.groups.Org2MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org2.watch.dog","port": 7011}]},"version": "0"}}' config.json > modified_config.json
 { set +x; } 2>/dev/null
 

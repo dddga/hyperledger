@@ -15,7 +15,7 @@ fi
 
 # cleen up the genesis block directory
 if [ -d "system-genesis-block" ]; then
-    rm -Rf system-genesis-block/*
+    sudo rm -Rf system-genesis-block/*
 fi
 
 # cleen up the genesis block directory
@@ -25,5 +25,5 @@ fi
 
 # cleen up wallet directory
 if [ -d "wallet" ]; then
-    rm -Rf channel-artifacts/*
+    sudo rm -Rf wallet/*
 fi

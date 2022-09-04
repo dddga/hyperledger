@@ -33,7 +33,7 @@ function json_ccp {
 # Where am I?
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-NET_DIR_PATH="/home/bstudent/myProject"
+NET_DIR_PATH="${HOME}/hyperledger"
 
 ORG=1
 P0PORT=5011
