@@ -47,7 +47,6 @@ fabric-ca 네트워크 사용
     - fortuneInfinity.go - 체인코드 정의  
 </details>
 
-    curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.8 1.5.3  
 
 -------------------
 ## 작동 순서
