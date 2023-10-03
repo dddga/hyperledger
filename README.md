@@ -67,6 +67,6 @@ fabric-ca 네트워크 사용
       cd hyperledger
       ./networkdown.sh
       
-웹사이트 접속 : https://localhost:3000  
-couchdb 접속 : https://localhost:5501/_utils (모든 peer의 couchdb포트 가능)  
+웹사이트 접속 : http://localhost:3000  
+couchdb 접속 : http://localhost:5501/_utils (모든 peer의 couchdb포트 가능)  
 (id : admin, pw: adminpw)
