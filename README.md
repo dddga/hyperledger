@@ -1,9 +1,9 @@
-# DID 기반 추첨
+# ID 기반 추첨
 ------------------
 ## 하이퍼레저 네트워크 구성 준비
 - ubuntu 22.04.1 사용
 - 공식 홈페이지에서 제공하는 fabric-samples 참조 [reference site](https://hyperledger-fabric.readthedocs.io/en/release-2.2/getting_started.html#)  
-- 명령어 git curl docker docker-compose golang-go nodejs, jq 설치
+- 명령어 git curl docker docker-compose golang nodejs, jq 설치
 - fabric-samples 다운로드
 
       curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.8 1.5.3  
@@ -70,3 +70,8 @@ fabric-ca 네트워크 사용
 웹사이트 접속 : http://localhost:3000  
 couchdb 접속 : http://localhost:5501/_utils (모든 peer의 couchdb포트 가능)  
 (id : admin, pw: adminpw)
+
+에러 유의 사항
+- Go 환경변수
+- CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_네트워크이름 ("" 없이)
+- TLS Handshaking Error -> startNetwork 실행 후 일정 시간 대기 후 채널 생성

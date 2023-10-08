@@ -33,7 +33,8 @@ fi
 # Excute CA containers
 infoln "------------- Generating certificates using Fabric CA"
 COMPOSE_FILE_CA=docker/docker-compose-ca.yaml
-IMAGE_TAG=latest docker-compose -f $COMPOSE_FILE_CA up -d 2>&1
+ENV_FILE=docker/.env
+docker-compose --env-file $ENV_FILE -f $COMPOSE_FILE_CA up -d 2>&1
 sleep 2
 
 # Create crypto material using Fabric CA
@@ -60,6 +61,7 @@ infoln "------------- Bring up the peer and orderer nodes using docker compose"
 COMPOSE_FILES=docker/docker-compose-net.yaml
 # IMAGE_TAG=latest docker-compose -f $COMPOSE_FILES up -d 2>&1
 COMPOSE_FILES_COUCH=docker/docker-compose-couch.yaml
-IMAGE_TAG=latest docker-compose -f $COMPOSE_FILES -f $COMPOSE_FILES_COUCH up -d 2>&1
+docker-compose --env-file $ENV_FILE -f $COMPOSE_FILES -f $COMPOSE_FILES_COUCH up -d 2>&1
 
 docker ps -a
+sleep 5

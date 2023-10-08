@@ -3,8 +3,8 @@
 COMPOSE_FILE_CA=docker/docker-compose-ca.yaml
 COMPOSE_FILES=docker/docker-compose-net.yaml
 COMPOSE_FILES_COUCH=docker/docker-compose-couch.yaml
-
-docker-compose -f $COMPOSE_FILE_CA -f $COMPOSE_FILES -f $COMPOSE_FILES_COUCH down --volumes --remove-orphans
+ENV_FILE=docker/.env
+docker-compose --env-file $ENV_FILE -f $COMPOSE_FILE_CA -f $COMPOSE_FILES -f $COMPOSE_FILES_COUCH down --volumes --remove-orphans
 
 
 # cleen up the MSP directory
@@ -24,6 +24,10 @@ if [ -d "channel-artifacts" ]; then
 fi
 
 # cleen up wallet directory
-if [ -d "wallet" ]; then
-    sudo rm -Rf wallet/*
+if [ -d "application/wallet" ]; then
+    sudo rm -Rf application/wallet/*
+fi
+
+if [ -e *.tar.gz ]; then
+    rm -Rf *.tar.gz
 fi
